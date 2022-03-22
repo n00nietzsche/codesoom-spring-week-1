@@ -1,19 +1,37 @@
 package com.codesoom.demo;
 
+import com.codesoom.demo.models.Task;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DemoHttpHandler implements HttpHandler {
+
+    private final List<Task> tasks = new ArrayList<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public DemoHttpHandler() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("First task");
+
+        tasks.add(task);
+    }
 
     /**
      * 1주차는 HTTP 통신에 대한 이해를 위주로 코드가 진행되는듯 보인다.
      */
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        // REST - CRUD
+        // CREATE 시에는 201 등 응답 코드도 똑바로 만들어보기
 
         // 요청의 3요소.
         // 1. METHOD - GET, POST, PUT/PATCH, DELETE, ...
@@ -28,12 +46,23 @@ public class DemoHttpHandler implements HttpHandler {
         URI uri = exchange.getRequestURI();
         String path = uri.getPath();
 
+        // HTTP Request Body 가져와서 파싱하기
+        InputStream inputStream = exchange.getRequestBody();
+        String body = new BufferedReader(new InputStreamReader(inputStream))
+                .lines()
+                .collect(Collectors.joining("\n"));
+
+        if(!body.isBlank()) {
+            Task task = toTask(body);
+            tasks.add(task);
+        }
+
         // 기본으로 뿌려줄 메세지
         String content = "Hello, world!";
 
         // 메서드와 PATH 가 일치하면 뿌려줄 메세지들
         if (method.equals("GET") && path.equals("/tasks")) {
-            content = "We have no task.";
+            content = tasksToJSON();
         }
         if (method.equals("POST") && path.equals("/tasks")) {
             content = "Create a new task.";
@@ -52,5 +81,17 @@ public class DemoHttpHandler implements HttpHandler {
         responseBody.close();
 
         System.out.println(method + " " + path);
+    }
+
+    private Task toTask(String body) throws JsonProcessingException {
+        return objectMapper.readValue(body, Task.class);
+    }
+
+    private String tasksToJSON() throws IOException {
+        OutputStream outputStream = new ByteArrayOutputStream();
+        // 반환 타입 void 로 outputStream 에 직접 넣어준다.
+        objectMapper.writeValue(outputStream, tasks);
+
+        return outputStream.toString();
     }
 }
