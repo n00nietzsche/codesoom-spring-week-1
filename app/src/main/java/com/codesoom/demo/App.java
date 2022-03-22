@@ -3,6 +3,14 @@
  */
 package com.codesoom.demo;
 
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
@@ -10,5 +18,19 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
+
+        InetSocketAddress address = new InetSocketAddress( 8000);
+
+        try {
+            HttpServer httpServer = HttpServer.create(address, 0);
+
+            HttpHandler handler = new DemoHttpHandler();
+            // "/" 로 들어오는 모든 요청에 대해 직접 만든 Handler 를 타게 해준다.
+            httpServer.createContext("/", handler);
+
+            httpServer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
