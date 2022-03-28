@@ -1,0 +1,46 @@
+// TODO: GET /tasks -> 목록으로 표시
+import axios from 'axios';
+
+class {
+    onCreate() {
+        this.state = {
+            tasks:[],
+        };
+
+        this.loadTasks();
+    }
+
+    async loadTasks() {
+        const { data } = await axios.get('http://localhost:8080/tasks');
+        this.state.tasks = data;
+    }
+
+    async addTask() {
+        const title = this.getEl('title').value;
+
+        // 1. 추가
+        await axios.post('http://localhost:8080/tasks', {
+            title
+        });
+        // 2. 다시 로딩
+        await this.loadTasks();
+    }
+}
+
+<h1>TODO</h1>
+<ol>
+    <for|task| of=state.tasks>
+        <li>
+            ${task.title}
+        </li>
+    </for>
+</ol>
+<p>
+    <label for:scoped="title">
+    할 일
+    </label>
+    <input id:scoped="title" key="title" type="text" />
+    <button on-click("addTask")>
+        추가
+    </button>
+</p>
