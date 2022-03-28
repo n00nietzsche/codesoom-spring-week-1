@@ -3,34 +3,14 @@
  */
 package com.codesoom.demo;
 
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.concurrent.Executor;
-
+// 스프링부트 애플리케이션이라는 것을 표시
+@SpringBootApplication
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
-
-        InetSocketAddress address = new InetSocketAddress( 8000);
-
-        try {
-            HttpServer httpServer = HttpServer.create(address, 0);
-
-            HttpHandler handler = new DemoHttpHandler();
-            // "/" 로 들어오는 모든 요청에 대해 직접 만든 Handler 를 타게 해준다.
-            httpServer.createContext("/", handler);
-
-            httpServer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // 어떤 클래스를 실행할 것인지, 인자를 어떻게 넘겨줄 것인지
+        SpringApplication.run(App.class, args);
     }
 }
