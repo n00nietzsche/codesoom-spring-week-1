@@ -16,6 +16,13 @@ plugins {
     id 'java'
 }
 
+configurations {
+    developmentOnly
+    runtimeClassPath {
+        extendsFrom developmentOnly
+    }
+}
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -34,6 +41,8 @@ dependencies {
     // Spring Web, 스프링 부트의 일부 설정을 대신해준다.
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.5'
 
+    // 스프링 개발에 편리한 것들을 제공해준다.
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 application {
