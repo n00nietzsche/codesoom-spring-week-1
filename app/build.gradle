@@ -24,6 +24,8 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    // Assert J - 더욱 풍부한 단정문을 제공한다.
+    testImplementation("org.assertj:assertj-guava:3.4.0")
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
@@ -33,7 +35,6 @@ dependencies {
 
     // Spring Web, 스프링 부트의 일부 설정을 대신해준다.
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.5'
-
 }
 
 application {

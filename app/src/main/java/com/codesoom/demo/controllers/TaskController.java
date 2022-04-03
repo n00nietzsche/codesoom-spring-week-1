@@ -1,16 +1,18 @@
 package com.codesoom.demo.controllers;
 
-// TODO: Read Collection - GET /tasks => 완료
+// DONE: Read Collection - GET /tasks => 완료
 // TODO: Read Item - GET /tasks/{id}
 // TODO: Create - POST /tasks => 완료
 // TODO: Update - PUT/PATCH /tasks/{id}
 // TODO: Delete - DELETE /tasks/{id}
 
 import com.codesoom.demo.models.Task;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tasks")
@@ -22,6 +24,20 @@ public class TaskController {
     @GetMapping("")
     public List<Task> list() {
         return tasks;
+    }
+
+    /**
+     * tasks/{id} 와 같이 주소에서 얻어온 값을 사용한다.
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<Task> detail(@PathVariable Long id) {
+        Optional<Task> entity = tasks.stream().filter(task -> task.getId().equals(id))
+                .findFirst();
+
+        // ResponseEntity.of() 내부 구현이 아래와 같이 되어있다.
+        // Assert.notNull(body, "Body must not be null");
+        // return body.map(ResponseEntity::ok).orElseGet(() -> notFound().build());
+        return ResponseEntity.of(entity);
     }
 
     @PostMapping("")
