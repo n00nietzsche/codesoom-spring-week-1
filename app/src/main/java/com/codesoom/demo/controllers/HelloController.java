@@ -10,6 +10,6 @@ public class HelloController {
     // RequestMapping 을 통해 DispatcherServlet 에 연결해야 한다.
     @RequestMapping("/")
     public String sayHello() {
-        return "Hello, world!";
+        return "Hello, world!!!";
     }
 }

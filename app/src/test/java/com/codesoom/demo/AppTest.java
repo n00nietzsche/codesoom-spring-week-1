@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
+<<<<<<< HEAD
     @Test void appHasAGreeting() {
 
     }
+=======
+>>>>>>> b0dded9cd66afdbe32c4e3e65eeafe84a67ca1d7
 }
