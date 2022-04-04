@@ -31,13 +31,44 @@ public class TaskController {
      */
     @GetMapping("{id}")
     public ResponseEntity<Task> detail(@PathVariable Long id) {
-        Optional<Task> entity = tasks.stream().filter(task -> task.getId().equals(id))
-                .findFirst();
 
         // ResponseEntity.of() 내부 구현이 아래와 같이 되어있다.
         // Assert.notNull(body, "Body must not be null");
         // return body.map(ResponseEntity::ok).orElseGet(() -> notFound().build());
+        return ResponseEntity.of(findTask(id));
+    }
+
+    @PatchMapping ("{id}")
+    public ResponseEntity<Task> update(@PathVariable Long id, @RequestBody Task source) {
+        Optional<Task> entity = findTask(id);
+
+        if(entity.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Task task = entity.get();
+        task.setTitle(source.getTitle());
+
         return ResponseEntity.of(entity);
+    }
+
+    @DeleteMapping ("{id}")
+    public ResponseEntity<Task> delete(@PathVariable Long id) {
+        Optional<Task> entity = findTask(id);
+
+        if(entity.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        tasks.remove(entity.get());
+
+        // 반환하는 엔티티가 없을 때는 204,
+        return ResponseEntity.noContent().build();
+    }
+
+    private Optional<Task> findTask(Long id) {
+        return tasks.stream().filter(task -> task.getId().equals(id))
+                .findFirst();
     }
 
     @PostMapping("")
