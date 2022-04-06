@@ -17,12 +17,36 @@ class {
 
     async addTask() {
         const title = this.getEl('title').value;
-
-        // 1. 추가
         await axios.post('http://localhost:8080/tasks', {
             title
         });
-        // 2. 다시 로딩
+        await this.loadTasks();
+    }
+
+    async deleteTask(id) {
+        await axios.delete(`http://localhost:8080/tasks/${id}`);
+        await this.loadTasks();
+    }
+
+    openEditTask(id) {
+        this.state.tasks = this.state.tasks.map((thisTask) => thisTask.id === id ? {
+        ...thisTask,
+        editing: true
+        } : thisTask);
+    }
+
+    closeEditTask(id) {
+        this.state.tasks = this.state.tasks.map((thisTask) => thisTask.id === id ? {
+        ...thisTask,
+        editing: false
+        } : thisTask);
+    }
+
+    async editTask(id) {
+        const title = this.getEl(`title-${id}`).value;
+        await axios.patch(`http://localhost:8080/tasks/${id}`, {
+            title
+        });
         await this.loadTasks();
     }
 }
@@ -31,7 +55,20 @@ class {
 <ol>
     <for|task| of=state.tasks>
         <li>
-            ${task.title}
+            <if(task.editing)>
+                <input key=`title-${task.id}` type="text" value=task.title />
+                <span> </span>
+                <button type="button" on-click('editTask', task.id)>확인</button>
+                <span> </span>
+                <button type="button" on-click('closeEditTask', task.id)>취소</button>
+            </if>
+            <else>
+                ${task.title}
+                <span> </span>
+                <button type="button" on-click('deleteTask', task.id)>완료</button>
+                <span> </span>
+                <button type="button" on-click('openEditTask', task.id)>수정</button>
+            </else>
         </li>
     </for>
 </ol>
