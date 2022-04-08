@@ -1,5 +1,6 @@
 package com.codesoom.demo.controllers;
 
+import com.codesoom.demo.application.TaskService;
 import com.codesoom.demo.models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskControllerTest {
     private TaskController taskController;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
-         taskController = new TaskController();
+        taskService = new TaskService();
+        taskController = new TaskController(taskService);
     }
 
     @Test
@@ -33,10 +36,7 @@ class TaskControllerTest {
         assertThat(taskController.list()).isNotEmpty();
         assertThat(taskController.list()).hasSize(2);
 
-        assertThat(taskController.list().get(0).getId()).isEqualTo(1L);
         assertThat(taskController.list().get(0).getTitle()).isEqualTo("Test1");
-
-        assertThat(taskController.list().get(1).getId()).isEqualTo(2L);
         assertThat(taskController.list().get(1).getTitle()).isEqualTo("Test2");
     }
 }

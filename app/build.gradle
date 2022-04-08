@@ -29,22 +29,25 @@ repositories {
 }
 
 dependencies {
+    /* TEST dependencies */
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     // Assert J - 더욱 풍부한 단정문을 제공한다.
     testImplementation 'org.assertj:assertj-guava:3.4.0'
+    // 스프링부트에서 Web 을 편리하게 테스트할 수 있도록 만들어준다.
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.5'
 
-    // This dependency is used by the application.
-    implementation 'com.google.guava:guava:30.1.1-jre'
-
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
-
-    // Spring Web, 스프링 부트의 일부 설정을 대신해준다.
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.5'
-
+    /* DEVELOPMENT dependencies */
     // 스프링 개발에 편리한 것들을 제공해준다.
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    /* PRODUCTION dependencies */
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:30.1.1-jre'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
+    // Spring Web, 스프링 부트의 일부 설정을 대신해준다.
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.5'
 }
 
 application {

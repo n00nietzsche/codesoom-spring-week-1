@@ -8,6 +8,7 @@ package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.application.TaskService;
 import com.codesoom.demo.models.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +20,10 @@ import java.util.List;
 @CrossOrigin
 public class TaskController {
     // 객체지향 처리에서 위임
-    private TaskService taskService;
+    private final TaskService taskService;
 
-    public TaskController() {
-        this.taskService = new TaskService();
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping("")
