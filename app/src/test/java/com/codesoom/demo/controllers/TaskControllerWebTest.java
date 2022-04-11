@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * 여태까지 JUnit 만으로 했던 테스트와 달리, `@WebMvcTest` 는 스프링을 이용한 테스트를 한다.
+ * 여태까지 JUnit 만으로 했던 테스트와 달리, `@WebMvcTest` 는 스프링 웹 레이어만을 이용한 테스트를 한다.
  */
 @WebMvcTest
 //@SpringBootTest

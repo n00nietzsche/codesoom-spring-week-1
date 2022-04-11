@@ -1,10 +1,10 @@
 package com.codesoom.demo.controllers;
 
 // DONE: Read Collection - GET /tasks => 완료
-// TODO: Read Item - GET /tasks/{id}
-// TODO: Create - POST /tasks => 완료
-// TODO: Update - PUT/PATCH /tasks/{id}
-// TODO: Delete - DELETE /tasks/{id}
+// DONE: Read Item - GET /tasks/{id}
+// DONE: Create - POST /tasks => 완료
+// DONE: Update - PUT/PATCH /tasks/{id}
+// DONE: Delete - DELETE /tasks/{id}
 
 import com.codesoom.demo.application.TaskService;
 import com.codesoom.demo.models.Task;
