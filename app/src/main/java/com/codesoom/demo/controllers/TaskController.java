@@ -54,6 +54,7 @@ public class TaskController {
     }
 
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     // HTTP Body 에 존재하는 JSON 자동으로 파싱하기
     public Task create(@RequestBody Task task) {
         return taskService.createTask(task);
