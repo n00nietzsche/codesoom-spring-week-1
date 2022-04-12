@@ -47,7 +47,9 @@ public class TaskService {
         return task;
     }
 
-    public void deleteTask(Long id) {
+    public Task deleteTask(Long id) {
+        Task task = getTask(id);
         tasks.remove(getTask(id));
+        return task;
     }
 }
