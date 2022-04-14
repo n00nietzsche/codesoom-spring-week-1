@@ -3,6 +3,7 @@ package com.codesoom.demo.application;
 import com.codesoom.demo.domain.TaskRepository;
 import com.codesoom.demo.exceptions.TaskNotFoundException;
 import com.codesoom.demo.domain.Task;
+import com.codesoom.demo.infra.InMemoryTaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService(new TaskRepository());
+        taskService = new TaskService(new InMemoryTaskRepository());
 
         Task task = new Task();
         task.setTitle(TASK_TITLE);
