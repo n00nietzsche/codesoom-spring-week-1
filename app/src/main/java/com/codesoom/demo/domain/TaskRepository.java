@@ -1,15 +1,11 @@
 package com.codesoom.demo.domain;
 
-import com.codesoom.demo.exceptions.TaskNotFoundException;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskRepository {
     List<Task> findAll();
-    Task find(Long id);
+    Optional<Task> findById(Long id);
     Task save(Task source);
-    Task update(long id, Task source);
-    Task remove(long id);
+    void delete(Task task);
 }

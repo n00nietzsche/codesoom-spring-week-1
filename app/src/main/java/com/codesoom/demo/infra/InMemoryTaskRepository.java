@@ -2,13 +2,12 @@ package com.codesoom.demo.infra;
 
 import com.codesoom.demo.domain.Task;
 import com.codesoom.demo.domain.TaskRepository;
-import com.codesoom.demo.exceptions.TaskNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@Repository
 public class InMemoryTaskRepository implements TaskRepository {
 
     private final List<Task> tasks = new ArrayList<>();
@@ -20,11 +19,10 @@ public class InMemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public Task find(Long id) {
+    public Optional<Task> findById(Long id) {
         return tasks.stream()
                 .filter(task -> task.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(id));
+                .findFirst();
     }
 
     @Override
@@ -39,17 +37,8 @@ public class InMemoryTaskRepository implements TaskRepository {
     }
 
     @Override
-    public Task update(long id, Task source) {
-        Task task = find(id);
-        task.setTitle(source.getTitle());
-        return task;
-    }
-
-    @Override
-    public Task remove(long id) {
-        Task task = find(id);
-        tasks.remove(find(id));
-        return task;
+    public void delete(Task task) {
+        tasks.remove(task);
     }
 
     public void increaseId() {
