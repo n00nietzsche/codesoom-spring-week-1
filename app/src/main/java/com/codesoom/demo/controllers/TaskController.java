@@ -7,10 +7,8 @@ package com.codesoom.demo.controllers;
 // DONE: Delete - DELETE /tasks/{id}
 
 import com.codesoom.demo.application.TaskService;
-import com.codesoom.demo.models.Task;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.codesoom.demo.domain.Task;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

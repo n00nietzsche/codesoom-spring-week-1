@@ -1,13 +1,13 @@
 package com.codesoom.demo.application;
 
+import com.codesoom.demo.domain.TaskRepository;
 import com.codesoom.demo.exceptions.TaskNotFoundException;
-import com.codesoom.demo.models.Task;
+import com.codesoom.demo.domain.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaskServiceTest {
     // 1. list -> getTasks
@@ -23,7 +23,7 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskService();
+        taskService = new TaskService(new TaskRepository());
 
         Task task = new Task();
         task.setTitle(TASK_TITLE);

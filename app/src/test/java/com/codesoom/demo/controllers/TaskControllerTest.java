@@ -2,7 +2,7 @@ package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.application.TaskService;
 import com.codesoom.demo.exceptions.TaskNotFoundException;
-import com.codesoom.demo.models.Task;
+import com.codesoom.demo.domain.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 

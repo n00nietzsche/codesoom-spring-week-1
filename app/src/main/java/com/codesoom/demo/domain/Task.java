@@ -1,17 +1,12 @@
 // 다루는 문제 (도메인) 에 대한 패키지로 models 생성
-package com.codesoom.demo.models;
+package com.codesoom.demo.domain;
 
-
+// Entity (Domain)
+// 참고: DB 의 Entity 와는 다르다.
 public class Task {
-    public static long sequence = 0;
-
+    // Unique Identifier, Unique Key
     private Long id;
     private String title;
-
-    public long generateId() {
-        sequence += 1;
-        return sequence;
-    }
 
     public Long getId() {
         return id;
