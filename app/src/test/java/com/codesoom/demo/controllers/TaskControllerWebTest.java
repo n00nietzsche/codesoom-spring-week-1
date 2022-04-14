@@ -29,9 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // DONE: Read Collection - GET /tasks
 // DONE: Read Item - GET /tasks/{id}
-// TODO: Create - POST /tasks
-// TODO: Update - PUT/PATCH /tasks/{id}
-// TODO: Delete - DELETE /tasks/{id}
+// DONE: Create - POST /tasks
+// DONE: Update - PUT/PATCH /tasks/{id}
+// DONE: Delete - DELETE /tasks/{id}
 
 // 전제 -> 서비스가 올바른 것
 // 서비스가 알아서 잘 할것이라고 믿으며 테스트를 작성했음.
