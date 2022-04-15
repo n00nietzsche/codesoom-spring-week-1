@@ -4,10 +4,12 @@ import com.codesoom.demo.domain.TaskRepository;
 import com.codesoom.demo.domain.Task;
 import com.codesoom.demo.exceptions.TaskNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class TaskService {
     private final TaskRepository taskRepository;
 
@@ -25,7 +27,10 @@ public class TaskService {
     }
 
     public Task createTask(Task source) {
-        return taskRepository.save(source);
+        Task task = new Task();
+        task.setTitle(source.getTitle());
+
+        return taskRepository.save(task);
     }
 
     public Task updateTask(Long id, Task source) {

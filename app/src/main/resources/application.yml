@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/data/demo3333
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
