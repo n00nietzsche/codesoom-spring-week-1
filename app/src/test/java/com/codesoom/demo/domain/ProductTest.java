@@ -24,4 +24,15 @@ class ProductTest {
         assertThat(product.getName()).isEqualTo(name);
     }
 
+    @Test
+    void change() {
+        Product product = new Product(1L, "쥐돌이", "냥이월드", 3000);
+        Product source = new Product("쥐순이", "냥이월드 2탄", 5000);
+
+        product.change(source);
+
+        assertThat(product.getName()).isEqualTo("쥐순이");
+        assertThat(product.getMaker()).isEqualTo("냥이월드 2탄");
+        assertThat(product.getPrice()).isEqualTo(5000);
+    }
 }

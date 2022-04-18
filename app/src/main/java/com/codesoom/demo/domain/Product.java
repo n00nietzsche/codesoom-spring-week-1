@@ -16,7 +16,14 @@ package com.codesoom.demo.domain;
 // 3. 가격 - 5,000원 (판매가)
 // 4. 이미지 - static, CDN => image URL
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private String maker;
@@ -63,6 +70,10 @@ public class Product {
         return imageUrl;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -77,5 +88,12 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public void change(Product source) {
+        this.setName(source.getName());
+        this.setMaker(source.getMaker());
+        this.setPrice(source.getPrice());
+        this.setImageUrl(source.getImageUrl());
     }
 }
