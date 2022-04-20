@@ -16,11 +16,20 @@ package com.codesoom.demo.domain;
 // 3. 가격 - 5,000원 (판매가)
 // 4. 이미지 - static, CDN => image URL
 
+import com.codesoom.demo.dto.ProductDto;
+import lombok.*;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
     @Id
     @GeneratedValue
@@ -30,70 +39,10 @@ public class Product {
     private Integer price;
     private String imageUrl;
 
-    public Product() {
-    }
-
-    public Product(Long id, String name, String maker, Integer price) {
-        this.id = id;
-        this.name = name;
-        this.maker = maker;
-        this.price = price;
-    }
-
-    public Product(String name, String maker, Integer price) {
-        this.name = name;
-        this.maker = maker;
-        this.price = price;
-    }
-
-    public Product(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getMaker() {
-        return maker;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setMaker(String maker) {
-        this.maker = maker;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void change(Product source) {
-        this.setName(source.getName());
-        this.setMaker(source.getMaker());
-        this.setPrice(source.getPrice());
-        this.setImageUrl(source.getImageUrl());
+    public void change(ProductDto productDto) {
+        this.setName(productDto.getName());
+        this.setMaker(productDto.getMaker());
+        this.setPrice(productDto.getPrice());
+        this.setImageUrl(productDto.getImageUrl());
     }
 }

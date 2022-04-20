@@ -1,5 +1,6 @@
 package com.codesoom.demo.domain;
 
+import com.codesoom.demo.dto.ProductDto;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +12,13 @@ class ProductTest {
         String name = "쥐돌이";
         long id = 1L;
 
-        Product product = new Product(id,"쥐돌이", "냥이월드", 5000);
+        Product product = Product.builder()
+                .id(id)
+                .name("쥐돌이")
+                .maker("냥이월드")
+                .price(5000)
+                .build();
+
         assertThat(product.getId()).isEqualTo(id);
         assertThat(product.getName()).isEqualTo(name);
     }
@@ -20,16 +27,31 @@ class ProductTest {
     void creationWithout() {
         String name = "쥐돌이";
 
-        Product product = new Product("쥐돌이", "냥이월드", 5000);
+        Product product = Product.builder()
+                .name("쥐돌이")
+                .maker("냥이월드")
+                .price(5000)
+                .build();
+
         assertThat(product.getName()).isEqualTo(name);
     }
 
     @Test
     void change() {
-        Product product = new Product(1L, "쥐돌이", "냥이월드", 3000);
-        Product source = new Product("쥐순이", "냥이월드 2탄", 5000);
+        Product product = Product.builder()
+                .id(1L)
+                .name("쥐돌이")
+                .maker("냥이월드")
+                .price(3000)
+                .build();
 
-        product.change(source);
+        ProductDto productDto = ProductDto.builder()
+                .name("쥐순이")
+                .maker("냥이월드 2탄")
+                .price(5000)
+                .build();
+
+        product.change(productDto);
 
         assertThat(product.getName()).isEqualTo("쥐순이");
         assertThat(product.getMaker()).isEqualTo("냥이월드 2탄");

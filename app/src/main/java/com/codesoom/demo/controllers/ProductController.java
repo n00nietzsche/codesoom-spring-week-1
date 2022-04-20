@@ -9,10 +9,11 @@ package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.application.ProductService;
 import com.codesoom.demo.domain.Product;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.codesoom.demo.dto.ProductDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -36,13 +37,13 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product create(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public Product create(@RequestBody @Valid ProductDto productDto) {
+        return productService.createProduct(productDto);
     }
 
     @PatchMapping("{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product source) {
-        return productService.updateProduct(id, source);
+    public Product update(@PathVariable Long id, @RequestBody @Valid ProductDto productDto) {
+        return productService.updateProduct(id, productDto);
     }
 
     @DeleteMapping("{id}")

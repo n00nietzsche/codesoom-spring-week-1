@@ -2,6 +2,7 @@ package com.codesoom.demo.application;
 
 import com.codesoom.demo.domain.Product;
 import com.codesoom.demo.domain.ProductRepository;
+import com.codesoom.demo.dto.ProductDto;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,13 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = new Product(1L, "쥐돌이", "냥이월드", 3000);
+        product = Product.builder()
+                .id(1L)
+                .name("쥐돌이")
+                .maker("냥이월드")
+                .price(3000)
+                .build();
+
         given(productRepository.findAll()).willReturn(List.of(product));
         given(productRepository.findById(1L)).willReturn(Optional.of(product));
         given(productRepository.findById(1000L)).willThrow(ProductNotFoundException.class);
@@ -73,8 +80,13 @@ class ProductServiceTest {
 
     @Test
     void createProduct() {
-        Product source = new Product("쥐돌이55", "냥이월드", 3000);
-        Product product = productService.createProduct(source);
+        ProductDto productDto = ProductDto.builder()
+                .name("쥐돌이55")
+                .maker("냥이월드")
+                .price(3000)
+                .build();
+
+        Product product = productService.createProduct(productDto);
         assertThat(product).isNotNull();
         assertThat(product.getName()).isEqualTo("쥐돌이55");
         assertThat(product.getId()).isEqualTo(2L);
@@ -83,8 +95,13 @@ class ProductServiceTest {
 
     @Test
     void updateProduct() {
-        Product source = new Product("쥐순이", "냥이월드", 3000);
-        Product product = productService.updateProduct(1L, source);
+        ProductDto productDto = ProductDto.builder()
+                .name("쥐순이")
+                .maker("냥이월드")
+                .price(3000)
+                .build();
+
+        Product product = productService.updateProduct(1L, productDto);
 
         assertThat(product).isNotNull();
         assertThat(product.getName()).isEqualTo("쥐순이");
@@ -95,9 +112,13 @@ class ProductServiceTest {
 
     @Test
     void updateProductNotFound() {
-        Product source = new Product("쥐순이", "냥이월드", 3000);
+        ProductDto productDto = ProductDto.builder()
+                .name("쥐순이")
+                .maker("냥이월드")
+                .price(3000)
+                .build();
 
-        assertThatThrownBy(() -> productService.updateProduct(1000L, source))
+        assertThatThrownBy(() -> productService.updateProduct(1000L, productDto))
                 .isInstanceOf(ProductNotFoundException.class);
     }
 
