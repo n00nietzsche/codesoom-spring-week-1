@@ -4,6 +4,7 @@ import com.codesoom.demo.domain.Product;
 import com.codesoom.demo.domain.ProductRepository;
 import com.codesoom.demo.dto.ProductDto;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.verify;
 class ProductServiceTest {
 
     private final ProductRepository productRepository = mock(ProductRepository.class);
-    private final ProductService productService = new ProductService(productRepository);
+    private final ProductService productService = new ProductService(productRepository, DozerBeanMapperBuilder.buildDefault());
     private Product product;
 
 

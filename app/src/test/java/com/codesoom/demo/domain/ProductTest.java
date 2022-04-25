@@ -45,13 +45,11 @@ class ProductTest {
                 .price(3000)
                 .build();
 
-        ProductDto productDto = ProductDto.builder()
+        product.changeWith(Product.builder()
                 .name("쥐순이")
                 .maker("냥이월드 2탄")
                 .price(5000)
-                .build();
-
-        product.change(productDto);
+                .build());
 
         assertThat(product.getName()).isEqualTo("쥐순이");
         assertThat(product.getMaker()).isEqualTo("냥이월드 2탄");

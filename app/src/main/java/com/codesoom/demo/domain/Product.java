@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Product {
     @Id
     @GeneratedValue
@@ -39,10 +40,10 @@ public class Product {
     private Integer price;
     private String imageUrl;
 
-    public void change(ProductDto productDto) {
-        this.setName(productDto.getName());
-        this.setMaker(productDto.getMaker());
-        this.setPrice(productDto.getPrice());
-        this.setImageUrl(productDto.getImageUrl());
+    public void changeWith(Product product) {
+        this.setName(product.getName());
+        this.setMaker(product.getMaker());
+        this.setPrice(product.getPrice());
+        this.setImageUrl(product.getImageUrl());
     }
 }

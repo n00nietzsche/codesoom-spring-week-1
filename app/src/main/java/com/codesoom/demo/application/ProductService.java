@@ -4,6 +4,9 @@ import com.codesoom.demo.domain.Product;
 import com.codesoom.demo.domain.ProductRepository;
 import com.codesoom.demo.dto.ProductDto;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +20,10 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final Mapper mapper;
 
     public List<Product> getProducts() {
         // TODO: 실제로 구현할 것
@@ -35,19 +36,15 @@ public class ProductService {
     }
 
     public Product createProduct(ProductDto productDto) {
-        Product product = Product.builder()
-                .name(productDto.getName())
-                .maker(productDto.getMaker())
-                .price(productDto.getPrice())
-                .build();
+        Product product = mapper.map(productDto, Product.class);
 
         return productRepository.save(product);
     }
 
     public Product updateProduct(long id, ProductDto productDto) {
-        // TODO: 실제로 구현할 것
         Product product = findProduct(id);
-        product.change(productDto);
+        // 순수한 엔티티는 DTO 를 모르는 것이 좋다.
+        product.changeWith(mapper.map(productDto, Product.class));
 
         return product;
     }

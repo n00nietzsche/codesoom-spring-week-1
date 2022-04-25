@@ -57,6 +57,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.5'
     // Spring Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Dozer Mapper
+    implementation 'com.github.dozermapper:dozer-core:6.4.0'
 }
 
 application {
