@@ -3,11 +3,8 @@
  */
 package com.codesoom.demo;
 
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import com.github.dozermapper.core.Mapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 // 스프링부트 애플리케이션이라는 것을 표시
 @SpringBootApplication
@@ -15,10 +12,5 @@ public class App {
     public static void main(String[] args) {
         // 어떤 클래스를 실행할 것인지, 인자를 어떻게 넘겨줄 것인지
         SpringApplication.run(App.class, args);
-    }
-
-    @Bean
-    public Mapper mapper() {
-        return DozerBeanMapperBuilder.buildDefault();
     }
 }
