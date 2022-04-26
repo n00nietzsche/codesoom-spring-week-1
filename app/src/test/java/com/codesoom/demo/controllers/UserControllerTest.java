@@ -22,8 +22,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,7 +56,37 @@ class UserControllerTest {
             return user;
         }));
 
-        given(userService.updateUser(eq(any(Long.class)), any(UserUpdateDto.class))).will((invocation -> {
+        given(userService.updateUser(eq(1000L), any(UserUpdateDto.class))).will((invocation -> {
+            Long id = invocation.getArgument(0);
+            throw new UserNotFoundException(id);
+        }));
+
+        given(userService.updateUser(eq(2002L), any(UserUpdateDto.class))).will((invocation -> {
+            Long id = invocation.getArgument(0);
+            throw new UserNotFoundException(id);
+        }));
+
+        given(userService.deleteUser(any(Long.class))).will(invocation -> {
+            Long id = invocation.getArgument(0);
+
+            User user = User.builder()
+                    .id(id)
+                    .password("tester")
+                    .email("tester@example.com")
+                    .name("tester")
+                    .build();
+
+            user.delete();
+
+            return user;
+        });
+
+        given(userService.deleteUser(eq(1000L))).will((invocation -> {
+            Long id = invocation.getArgument(0);
+            throw new UserNotFoundException(id);
+        }));
+
+        given(userService.deleteUser(eq(2002L))).will((invocation -> {
             Long id = invocation.getArgument(0);
             throw new UserNotFoundException(id);
         }));
@@ -128,5 +157,37 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"tester\",\"password\":\"test\"}")
                 ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateDeletedUser() throws Exception {
+        mockMvc.perform(patch("/users/2002")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"tester\",\"password\":\"test\"}")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void destroy() throws Exception {
+        mockMvc.perform(delete("/users/1"))
+                .andExpect(status().isNoContent());
+
+        verify(userService).deleteUser(1L);
+    }
+
+    @Test
+    void destroyNotFoundUser() throws Exception {
+        mockMvc.perform(delete("/users/1000"))
+                .andExpect(status().isNotFound());
+
+        verify(userService).deleteUser(1000L);
+    }
+
+    @Test
+    void destroyDeletedUser() throws Exception {
+        mockMvc.perform(delete("/users/2002"))
+                .andExpect(status().isNotFound());
+
+        verify(userService).deleteUser(2002L);
     }
 }

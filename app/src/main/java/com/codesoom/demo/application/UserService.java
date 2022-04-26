@@ -28,8 +28,25 @@ public class UserService {
     }
 
     public User updateUser(Long id, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        User user = getUser(id);
         mapper.map(userUpdateDto, user);
+        return user;
+    }
+
+    public User deleteUser(long id) {
+        User user = getUser(id);
+        user.delete();
+        return user;
+    }
+
+    private User getUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        if(user.isDeleted()) {
+            throw new UserNotFoundException(id);
+        }
+
         return user;
     }
 }

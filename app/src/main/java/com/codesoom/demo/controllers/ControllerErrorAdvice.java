@@ -1,5 +1,6 @@
 package com.codesoom.demo.controllers;
 
+import com.codesoom.demo.exceptions.AlreadyDeletedUserException;
 import com.codesoom.demo.exceptions.DuplicateUserEmailException;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
 import com.codesoom.demo.exceptions.TaskNotFoundException;
@@ -37,5 +38,12 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(UserNotFoundException.class)
     public ErrorResponse handleUserNotFound() {
         return new ErrorResponse("User not found");
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AlreadyDeletedUserException.class)
+    public ErrorResponse handleAlreadyDeletedUser() {
+        return new ErrorResponse("this user is already deleted");
     }
 }

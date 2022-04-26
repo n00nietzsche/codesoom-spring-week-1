@@ -28,4 +28,15 @@ class UserTest {
         assertThat(user.getPassword()).isEqualTo(source.getPassword());
         assertThat(user.getEmail()).isEqualTo("my@naver.com");
     }
+
+    @Test
+    void delete() {
+        User user = User.builder().build();
+
+        assertThat(user.isDeleted()).isFalse();
+
+        user.delete();
+
+        assertThat(user.isDeleted()).isTrue();
+    }
 }

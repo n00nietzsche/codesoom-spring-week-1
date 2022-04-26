@@ -122,4 +122,12 @@ class UserServiceTest {
 
         verify(userRepository).findById(1000L);
     }
+
+    @Test
+    void deleteUserWithExistingId() {
+        User user = userService.deleteUser(1L);
+
+        assertThat(user.getId()).isEqualTo(1L);
+        assertThat(user.isDeleted()).isTrue();
+    }
 }
