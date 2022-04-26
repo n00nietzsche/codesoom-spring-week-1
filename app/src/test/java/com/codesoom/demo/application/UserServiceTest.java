@@ -3,16 +3,21 @@ package com.codesoom.demo.application;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.UserCreationDto;
+import com.codesoom.demo.dto.UserUpdateDto;
 import com.codesoom.demo.exceptions.DuplicateUserEmailException;
+import com.codesoom.demo.exceptions.UserNotFoundException;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -40,6 +45,19 @@ class UserServiceTest {
 
         given(userRepository.existsByEmail(DUPLICATE_EMAIL_ADDRESS))
                 .willReturn(true);
+
+        given(userRepository.findById(any(Long.class))).will(invocation -> {
+            Long id = invocation.getArgument(0);
+
+            return Optional.of(User.builder()
+                    .id(id)
+                    .name("tester")
+                    .email("tester@example.com")
+                    .password("12341234")
+                    .build());
+        });
+
+        given(userRepository.findById(eq(1000L))).willThrow(new UserNotFoundException(1000L));
     }
 
     @Test
@@ -75,4 +93,33 @@ class UserServiceTest {
         verify(userRepository).existsByEmail(DUPLICATE_EMAIL_ADDRESS);
     }
 
+    @Test
+    void updateUserWithExistingId() {
+        UserUpdateDto userUpdateDto = UserUpdateDto
+                .builder()
+                .name("updatedTester")
+                .password("updatedTester123")
+                .build();
+
+        User user = userService.updateUser(1L, userUpdateDto);
+        assertThat(user.getName()).isEqualTo("updatedTester");
+        assertThat(user.getPassword()).isEqualTo("updatedTester123");
+        assertThat(user.getEmail()).isEqualTo("tester@example.com");
+
+        verify(userRepository).findById(1L);
+    }
+
+    @Test
+    void updateUserWithNotFoundId() {
+        UserUpdateDto userUpdateDto = UserUpdateDto
+                .builder()
+                .name("updatedTester")
+                .password("updatedTester123")
+                .build();
+
+        assertThatThrownBy(() -> userService.updateUser(1000L, userUpdateDto))
+                .isInstanceOf(UserNotFoundException.class);
+
+        verify(userRepository).findById(1000L);
+    }
 }

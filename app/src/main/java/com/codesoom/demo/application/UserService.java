@@ -3,7 +3,9 @@ package com.codesoom.demo.application;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.UserCreationDto;
+import com.codesoom.demo.dto.UserUpdateDto;
 import com.codesoom.demo.exceptions.DuplicateUserEmailException;
+import com.codesoom.demo.exceptions.UserNotFoundException;
 import com.github.dozermapper.core.Mapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +25,11 @@ public class UserService {
         }
 
         return userRepository.save(mapper.map(userCreationDto, User.class));
+    }
+
+    public User updateUser(Long id, UserUpdateDto userUpdateDto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        mapper.map(userUpdateDto, user);
+        return user;
     }
 }
