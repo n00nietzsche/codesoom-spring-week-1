@@ -40,13 +40,7 @@ public class UserService {
     }
 
     private User getUser(Long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-
-        if(user.isDeleted()) {
-            throw new UserNotFoundException(id);
-        }
-
-        return user;
     }
 }

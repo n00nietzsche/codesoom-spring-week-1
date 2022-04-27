@@ -18,4 +18,7 @@ public interface JpaUserRepository extends UserRepository, JpaRepository<User, L
 
     @Override
     Optional<User> findById(Long id);
+
+    @Override
+    Optional<User> findByIdAndDeletedIsFalse(Long id);
 }

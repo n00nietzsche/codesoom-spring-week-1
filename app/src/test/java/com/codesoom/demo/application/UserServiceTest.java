@@ -46,7 +46,7 @@ class UserServiceTest {
         given(userRepository.existsByEmail(DUPLICATE_EMAIL_ADDRESS))
                 .willReturn(true);
 
-        given(userRepository.findById(any(Long.class))).will(invocation -> {
+        given(userRepository.findByIdAndDeletedIsFalse(any(Long.class))).will(invocation -> {
             Long id = invocation.getArgument(0);
 
             return Optional.of(User.builder()
@@ -57,7 +57,7 @@ class UserServiceTest {
                     .build());
         });
 
-        given(userRepository.findById(eq(1000L))).willThrow(new UserNotFoundException(1000L));
+        given(userRepository.findByIdAndDeletedIsFalse(eq(1000L))).willReturn(Optional.empty());
     }
 
     @Test
@@ -106,7 +106,7 @@ class UserServiceTest {
         assertThat(user.getPassword()).isEqualTo("updatedTester123");
         assertThat(user.getEmail()).isEqualTo("tester@example.com");
 
-        verify(userRepository).findById(1L);
+        verify(userRepository).findByIdAndDeletedIsFalse(1L);
     }
 
     @Test
@@ -120,7 +120,7 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.updateUser(1000L, userUpdateDto))
                 .isInstanceOf(UserNotFoundException.class);
 
-        verify(userRepository).findById(1000L);
+        verify(userRepository).findByIdAndDeletedIsFalse(1000L);
     }
 
     @Test
