@@ -7,6 +7,9 @@ package com.codesoom.demo.controllers;
 // TODO: PATCH /products/{id}
 // TODO: DELETE /products/{id}
 
+// /products -> Create, Read
+// /products/{id} -> Read, Update, Delete
+
 import com.codesoom.demo.application.ProductService;
 import com.codesoom.demo.domain.Product;
 import com.codesoom.demo.dto.ProductDto;
