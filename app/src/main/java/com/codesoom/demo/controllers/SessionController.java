@@ -26,8 +26,10 @@ public class SessionController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public SessionResponseDto login() {
-        String accessToken = authenticationService.login();
+    public SessionResponseDto login(Long userId) {
+        String accessToken = authenticationService.login(userId);
+
+        System.out.println("accessToken = " + accessToken);
 
         // 토큰을 주어야 함
         return SessionResponseDto.builder()

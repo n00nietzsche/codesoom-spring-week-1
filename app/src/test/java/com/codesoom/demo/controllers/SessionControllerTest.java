@@ -1,6 +1,7 @@
 package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.Utf8WebMvcTest;
+import com.codesoom.demo.annotations.Utf8MockMvc;
 import com.codesoom.demo.application.AuthenticationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,18 +22,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Utf8WebMvcTest(SessionController.class)
+@SpringBootTest
+@Utf8MockMvc
 class SessionControllerTest {
     @Autowired
     MockMvc mockMvc;
-
-    @MockBean
-    private AuthenticationService authenticationService;
-
-    @BeforeEach
-    void setUp() {
-        given(authenticationService.login()).willReturn("a.b.c");
-    }
 
     @Test
     void login() throws Exception {

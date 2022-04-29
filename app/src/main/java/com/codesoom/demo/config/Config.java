@@ -19,7 +19,6 @@ public class Config {
 
     @Bean
     public JwtUtil jwtUtil() {
-        System.out.println("SECRET = " + SECRET);
         return new JwtUtil(SECRET);
     }
 }

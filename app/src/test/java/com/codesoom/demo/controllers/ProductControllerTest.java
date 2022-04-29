@@ -1,16 +1,23 @@
 package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.Utf8WebMvcTest;
+import com.codesoom.demo.annotations.Utf8MockMvc;
 import com.codesoom.demo.application.ProductService;
+import com.codesoom.demo.config.Config;
 import com.codesoom.demo.domain.Product;
 import com.codesoom.demo.dto.ProductDto;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
+import com.codesoom.demo.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -33,13 +40,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // TODO: PATCH /products/{id}
 // TODO: DELETE /products/{id}
 
-@Utf8WebMvcTest(ProductController.class)
+@SpringBootTest
+@Utf8MockMvc
 class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private ProductService productService;
+
+    private static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.ZZ3CUl0jxeLGvQ1Js5nG2Ty5qGTlqai5ubDMXZOdaDk";
+    private static final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.ZZ3CUl0jxeLGvQ1Js5nG2Ty5qGTlqai5ubDMXZOdaDK";
 
     @BeforeEach
     void setUp() {
@@ -92,16 +103,38 @@ class ProductControllerTest {
     }
 
     @Test
-    void create() throws Exception {
+    void createWithAccessToken() throws Exception {
         // 목록을 이미 갖추고 있음
         mockMvc.perform(post("/products")
                         .content("{\"name\": \"쥐돌이\", \"maker\": \"냥이월드\", \"price\": 5000}")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isCreated())
                 .andExpect(content().string(containsString("쥐돌이")));
 
         verify(productService).createProduct(any(ProductDto.class));
+    }
+
+    @Test
+    void createWithoutAccessToken() throws Exception {
+        // 목록을 이미 갖추고 있음
+        mockMvc.perform(post("/products")
+                        .content("{\"name\": \"쥐돌이\", \"maker\": \"냥이월드\", \"price\": 5000}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void createWithInvalidAccessToken() throws Exception {
+        // 목록을 이미 갖추고 있음
+        mockMvc.perform(post("/products")
+                        .content("{\"name\": \"쥐돌이\", \"maker\": \"냥이월드\", \"price\": 5000}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + INVALID_TOKEN)
+                )
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
