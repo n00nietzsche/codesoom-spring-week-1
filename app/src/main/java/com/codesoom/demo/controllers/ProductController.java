@@ -30,7 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private final AuthenticationService authenticationService;
 
     @GetMapping
     public List<Product> list() {
@@ -44,11 +43,7 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product create(@RequestBody @Valid ProductDto productDto,
-                          @RequestHeader("Authorization") String authorization) {
-        String token = authorization.substring("Bearer ".length());
-        Long userId = authenticationService.parseToken(token);
-        System.out.println("userId = " + userId);
+    public Product create(@RequestBody @Valid ProductDto productDto) {
         return productService.createProduct(productDto);
     }
 

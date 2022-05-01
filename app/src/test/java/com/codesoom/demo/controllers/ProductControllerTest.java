@@ -1,23 +1,16 @@
 package com.codesoom.demo.controllers;
 
-import com.codesoom.demo.Utf8WebMvcTest;
 import com.codesoom.demo.annotations.Utf8MockMvc;
 import com.codesoom.demo.application.ProductService;
-import com.codesoom.demo.config.Config;
 import com.codesoom.demo.domain.Product;
 import com.codesoom.demo.dto.ProductDto;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
-import com.codesoom.demo.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -27,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -138,11 +130,12 @@ class ProductControllerTest {
     }
 
     @Test
-    void update() throws Exception {
+    void updateWithAccessToken() throws Exception {
         // 목록을 이미 갖추고 있음
         mockMvc.perform(patch("/products/1")
                         .content("{\"name\": \"쥐순이\", \"maker\": \"냥이월드\", \"price\": 5000}")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("쥐순이")));
@@ -151,11 +144,33 @@ class ProductControllerTest {
     }
 
     @Test
+    void updateWithoutAccessToken() throws Exception {
+        // 목록을 이미 갖추고 있음
+        mockMvc.perform(patch("/products/1")
+                        .content("{\"name\": \"쥐순이\", \"maker\": \"냥이월드\", \"price\": 5000}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void updateWithInvalidAccessToken() throws Exception {
+        // 목록을 이미 갖추고 있음
+        mockMvc.perform(patch("/products/1")
+                        .content("{\"name\": \"쥐순이\", \"maker\": \"냥이월드\", \"price\": 5000}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + INVALID_TOKEN)
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void updateNotFound() throws Exception {
         // 목록을 이미 갖추고 있음
         mockMvc.perform(patch("/products/1000")
                         .content("{\"name\": \"쥐순이\", \"maker\": \"냥이월드\", \"price\": 5000}")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -166,23 +181,47 @@ class ProductControllerTest {
         mockMvc.perform(patch("/products/1")
                         .content("{\"name\": \"\", \"maker\": \"\", \"price\": -100}")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void remove() throws Exception {
+    void removeWithAccessToken() throws Exception {
         // 목록을 이미 갖추고 있음
-        mockMvc.perform(delete("/products/1"))
+        mockMvc.perform(
+                delete("/products/1")
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
+                )
                 .andExpect(status().isNoContent());
 
         verify(productService).deleteProduct(1L);
     }
 
     @Test
+    void removeWithInvalidAccessToken() throws Exception {
+        // 목록을 이미 갖추고 있음
+        mockMvc.perform(
+                        delete("/products/1")
+                                .header("Authorization", "Bearer " + INVALID_TOKEN)
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void removeWithoutAccessToken() throws Exception {
+        // 목록을 이미 갖추고 있음
+        mockMvc.perform(
+                        delete("/products/1")
+                )
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void removeNotFound() throws Exception {
         // 목록을 이미 갖추고 있음
-        mockMvc.perform(delete("/products/1000"))
+        mockMvc.perform(delete("/products/1000")
+                        .header("Authorization", "Bearer " + VALID_TOKEN))
                 .andExpect(status().isNotFound());
     }
 
@@ -192,6 +231,7 @@ class ProductControllerTest {
         mockMvc.perform(post("/products")
                         .content("{\"name\": \"\", \"maker\": \"\", \"price\": -100}")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                 .andExpect(status().isBadRequest());
     }

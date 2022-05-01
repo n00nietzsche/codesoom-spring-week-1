@@ -40,7 +40,5 @@ public class AuthenticationService {
         } catch (JwtException e) {
             throw new InvalidAccessTokenException(token);
         }
-
-
     }
 }
