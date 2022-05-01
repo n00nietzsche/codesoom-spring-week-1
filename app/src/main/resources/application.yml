@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:C:/db/db
+    url: jdbc:h2:./db/db
     username: sa
     password:
   jpa:
