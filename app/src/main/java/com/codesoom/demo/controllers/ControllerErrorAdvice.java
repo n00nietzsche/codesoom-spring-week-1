@@ -44,4 +44,11 @@ public class ControllerErrorAdvice {
     public void handleInvalidAccessTokenException() {
 
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(LoginFailException.class)
+    public void handleLoginFailException() {
+
+    }
+
 }

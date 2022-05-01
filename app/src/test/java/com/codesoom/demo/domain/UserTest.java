@@ -39,4 +39,32 @@ class UserTest {
 
         assertThat(user.isDeleted()).isTrue();
     }
+
+    @Test
+    void authenticate() {
+        String password = "password";
+        String wrongPassword = "wrong" + password;
+
+        User user = User.builder()
+                .email("myEmail@naver.com")
+                .password(password)
+                .build();
+
+        assertThat(user.authenticate(password)).isTrue();
+        assertThat(user.authenticate(wrongPassword)).isFalse();
+    }
+
+    @Test
+    void authenticateWithDeletedUser() {
+        String password = "password";
+
+        User user = User.builder()
+                .email("myEmail@naver.com")
+                .password(password)
+                .build();
+
+        user.delete();
+
+        assertThat(user.authenticate(password)).isFalse();
+    }
 }

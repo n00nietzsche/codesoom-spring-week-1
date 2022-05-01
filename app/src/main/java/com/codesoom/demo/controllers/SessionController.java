@@ -9,14 +9,13 @@ package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.application.AuthenticationService;
 import com.codesoom.demo.dto.SessionResponseDto;
+import com.codesoom.demo.dto.UserLoginDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/session")
@@ -26,10 +25,8 @@ public class SessionController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public SessionResponseDto login(Long userId) {
-        String accessToken = authenticationService.login(userId);
-
-        System.out.println("accessToken = " + accessToken);
+    public SessionResponseDto login(@RequestBody @Valid UserLoginDto userLoginDto) {
+        String accessToken = authenticationService.login(userLoginDto);
 
         // 토큰을 주어야 함
         return SessionResponseDto.builder()

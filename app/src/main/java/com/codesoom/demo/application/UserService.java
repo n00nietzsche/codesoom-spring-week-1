@@ -43,4 +43,15 @@ public class UserService {
         return userRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    public User getUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+
+        if(user.isDeleted()) {
+            throw new UserNotFoundException(email);
+        }
+
+        return user;
+    }
 }

@@ -11,7 +11,7 @@ public interface JpaUserRepository extends UserRepository, JpaRepository<User, L
     User save(User user);
 
     @Override
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     @Override
     boolean existsByEmail(String email);
@@ -21,4 +21,7 @@ public interface JpaUserRepository extends UserRepository, JpaRepository<User, L
 
     @Override
     Optional<User> findByIdAndDeletedIsFalse(Long id);
+
+    @Override
+    void deleteAll();
 }

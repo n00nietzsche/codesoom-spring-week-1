@@ -53,6 +53,10 @@ public class User {
         deleted = true;
     }
 
+    public boolean authenticate(String password) {
+        return !deleted && this.password.equals(password);
+    }
+
     public boolean isDeleted() {
         return deleted;
     }
