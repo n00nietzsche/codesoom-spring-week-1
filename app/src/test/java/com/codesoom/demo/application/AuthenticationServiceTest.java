@@ -1,11 +1,13 @@
 package com.codesoom.demo.application;
 
+import com.codesoom.demo.domain.User;
 import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.UserCreationDto;
 import com.codesoom.demo.dto.UserLoginDto;
 import com.codesoom.demo.exceptions.InvalidAccessTokenException;
 import com.codesoom.demo.exceptions.LoginFailException;
 import com.codesoom.demo.exceptions.UserNotFoundException;
+import com.codesoom.demo.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +24,20 @@ class AuthenticationServiceTest {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private static final String RIGHT_EMAIL = "i.am.very.good.test.user@test.com";
     private static final String RIGHT_PASSWORD = "nobody.knows.my.password";
     private static final String WRONG_EMAIL = RIGHT_EMAIL + "d";
     private static final String WRONG_PASSWORD = RIGHT_PASSWORD + "d";
-    private static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.ZZ3CUl0jxeLGvQ1Js5nG2Ty5qGTlqai5ubDMXZOdaDk";
-    private static final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.ZZ3CUl0jxeLGvQ1Js5nG2Ty5qGTlqai5ubDMXZOdaDK";
+    private String validToken;
+    private String invalidToken;
+    private User testUser;
 
     @BeforeEach
     void setUp() {
-        setUpTestUser();
+        setUpTestUserAndToken();
     }
 
     @Test
@@ -44,7 +49,7 @@ class AuthenticationServiceTest {
                         .build()
         );
 
-        assertThat(accessToken).isEqualTo(VALID_TOKEN);
+        assertThat(accessToken).isEqualTo(validToken);
     }
 
     @Test
@@ -71,8 +76,8 @@ class AuthenticationServiceTest {
 
     @Test
     void parseValidToken() {
-        Long userId = authenticationService.parseToken(VALID_TOKEN);
-        assertThat(userId).isEqualTo(1L);
+        Long userId = authenticationService.parseToken(validToken);
+        assertThat(userId).isEqualTo(testUser.getId());
     }
 
     @Test
@@ -92,17 +97,20 @@ class AuthenticationServiceTest {
 
     @Test
     void parseInvalidToken() {
-        assertThatThrownBy(() -> authenticationService.parseToken(INVALID_TOKEN))
+        assertThatThrownBy(() -> authenticationService.parseToken(invalidToken))
                 .isInstanceOf(InvalidAccessTokenException.class);
     }
 
-    void setUpTestUser() {
+    void setUpTestUserAndToken() {
         userRepository.deleteAll();
 
-        userService.createUser(UserCreationDto.builder()
-                        .email(RIGHT_EMAIL)
-                        .password(RIGHT_PASSWORD)
-                        .name("SUCH A GOOD NAME")
-                        .build());
+        testUser = userService.createUser(UserCreationDto.builder()
+                .email(RIGHT_EMAIL)
+                .password(RIGHT_PASSWORD)
+                .name("SUCH A GOOD NAME")
+                .build());
+
+        validToken = jwtUtil.encode(testUser.getId());
+        invalidToken = validToken + "d";
     }
 }

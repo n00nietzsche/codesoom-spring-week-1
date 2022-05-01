@@ -1,6 +1,7 @@
 package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.Utf8WebMvcTest;
+import com.codesoom.demo.application.AuthenticationService;
 import com.codesoom.demo.application.UserService;
 import com.codesoom.demo.config.Config;
 import com.codesoom.demo.domain.User;
@@ -35,6 +36,8 @@ class UserControllerTest {
     private Mapper mapper;
     @MockBean
     private UserService userService;
+    @MockBean
+    private AuthenticationService authenticationService;
 
     @BeforeEach
     void setUp() {

@@ -13,11 +13,15 @@ package com.codesoom.demo.interceptors;
 
 import com.codesoom.demo.application.AuthenticationService;
 import com.codesoom.demo.exceptions.InvalidAccessTokenException;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
@@ -25,19 +29,33 @@ import static org.springframework.util.StringUtils.hasText;
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
     private final AuthenticationService authenticationService;
+    private final Set<HttpMethod> applyToMethods = new HashSet<>();
 
     public AuthenticationInterceptor(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+        
+        applyToMethods.add(HttpMethod.POST);
+        applyToMethods.add(HttpMethod.PATCH);
+        applyToMethods.add(HttpMethod.DELETE);
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) {
+        HttpMethod method = HttpMethod.resolve(request.getMethod());
+
+        if(applyToMethods.contains(method)) {
+            doAuthentication(request);
+        }
+
+        // true 면 계속 진행, false 면 중단하는 것이다.
+        return true;
+    }
+
+    private void doAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         checkIfAuthorized(authorization);
-
-        return true;
     }
 
     private void checkIfAuthorized(String authorization) {

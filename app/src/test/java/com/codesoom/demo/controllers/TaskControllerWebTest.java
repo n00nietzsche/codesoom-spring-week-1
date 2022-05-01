@@ -1,5 +1,6 @@
 package com.codesoom.demo.controllers;
 
+import com.codesoom.demo.application.AuthenticationService;
 import com.codesoom.demo.application.TaskService;
 import com.codesoom.demo.exceptions.TaskNotFoundException;
 import com.codesoom.demo.domain.Task;
@@ -52,6 +53,8 @@ public class TaskControllerWebTest {
     @MockBean
     private TaskService taskService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @MockBean
+    private AuthenticationService authenticationService;
 
     @BeforeEach
     public void setUp() {
