@@ -5,14 +5,19 @@ import com.codesoom.demo.filters.AuthenticationErrorFilter;
 import com.codesoom.demo.filters.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import javax.servlet.Filter;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationService authenticationService;
 
@@ -27,6 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         Filter authenticationErrorFilter = new AuthenticationErrorFilter();
         http.csrf().disable()
                 .addFilter(authenticationFilter)
-                .addFilterBefore(authenticationErrorFilter, JwtAuthenticationFilter.class);
+                .addFilterBefore(authenticationErrorFilter, // advice 에서 잡지 않고, addFilterBefore() 에서 예외를 잡아주었다.
+                        JwtAuthenticationFilter.class)
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED) // 권한 인증이 실패했을 때의 기본 상태코드
+                );
     }
 }

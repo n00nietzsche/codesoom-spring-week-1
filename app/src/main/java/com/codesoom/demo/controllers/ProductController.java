@@ -19,6 +19,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,17 +45,31 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product create(@RequestBody @Valid ProductDto productDto) {
+    // `@PreAuthorize` 애노테이션이 붙어있으면
+    // 요소로 받은 메서드의 결과에 따라 이 메서드를 실행할 수 있고 없고가 결정된다.
+    // hasAuthority() 로 권한을 설정할 수도 있다.
+    @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
+    // 이건 로그인이 필요해! -> Authorization
+    // 누가 이걸 하는 거야? -> Authentication
+    public Product create(@RequestBody @Valid ProductDto productDto,
+                          Authentication authentication) {
+        System.out.println("authentication = " + authentication);
         return productService.createProduct(productDto);
     }
 
     @PatchMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    // 이건 로그인이 필요해! -> Authorization
+    // 누가 이걸 하는 거야? -> Authentication
     public Product update(@PathVariable Long id, @RequestBody @Valid ProductDto productDto) {
         return productService.updateProduct(id, productDto);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated()")
+    // 이건 로그인이 필요해! -> Authorization
+    // 누가 이걸 하는 거야? -> Authentication
     public void delete(@PathVariable Long id) {
         productService.deleteProduct(id);
     }
