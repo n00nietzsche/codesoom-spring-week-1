@@ -62,10 +62,12 @@ class UserServiceTest {
 
     @Test
     void createUser() {
+        String plainPassword = "test";
+
         UserCreationDto userCreationDto = UserCreationDto.builder()
                 .name("tester")
                 .email("tester@example.com")
-                .password("test")
+                .password(plainPassword)
                 .build();
 
         User user = userService.createUser(userCreationDto);
@@ -74,6 +76,7 @@ class UserServiceTest {
         assertThat(user.getId()).isEqualTo(13L);
         assertThat(user.getName()).isEqualTo("tester");
         assertThat(user.getEmail()).isEqualTo("tester@example.com");
+        assertThat(user.getPassword()).isNotEqualTo(plainPassword);
 
         verify(userRepository).save(any(User.class));
     }

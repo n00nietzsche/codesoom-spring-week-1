@@ -24,7 +24,10 @@ public class UserService {
             throw new DuplicateUserEmailException(userCreationDto.getEmail());
         }
 
-        return userRepository.save(mapper.map(userCreationDto, User.class));
+        User user = userRepository.save(mapper.map(userCreationDto, User.class));
+        user.encodePassword(user.getPassword());
+
+        return user;
     }
 
     public User updateUser(Long id, UserUpdateDto userUpdateDto) {
