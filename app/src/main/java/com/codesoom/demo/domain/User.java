@@ -16,6 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
+import static com.codesoom.demo.config.SecurityConfig.PASSWORD_ENCODER;
+
 @Entity
 @Getter
 @Setter
@@ -72,6 +74,6 @@ public class User {
     }
 
     public void encodePassword(String password) {
-        this.password = passwordEncoder.encode(password);
+        this.password = PASSWORD_ENCODER.encode(password);
     }
 }
