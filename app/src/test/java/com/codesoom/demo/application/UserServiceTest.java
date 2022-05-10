@@ -1,5 +1,7 @@
 package com.codesoom.demo.application;
 
+import com.codesoom.demo.domain.Role;
+import com.codesoom.demo.domain.RoleRepository;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.UserCreationDto;
@@ -27,11 +29,12 @@ class UserServiceTest {
 
     private final UserService userService;
     private final UserRepository userRepository = mock(UserRepository.class);
+    private final RoleRepository roleRepository = mock(RoleRepository.class);
     private final Mapper mapper = DozerBeanMapperBuilder.buildDefault();
     private final String DUPLICATE_EMAIL_ADDRESS = "duplicate@example.com";
 
     public UserServiceTest() {
-        this.userService = new UserService(mapper, userRepository);;
+        this.userService = new UserService(mapper, userRepository, roleRepository);
 
         given(userRepository.save(any(User.class))).will(invocation -> {
             User source = invocation.getArgument(0);
@@ -80,6 +83,7 @@ class UserServiceTest {
         assertThat(user.getPassword()).isNotEqualTo(plainPassword);
 
         verify(userRepository).save(any(User.class));
+        verify(roleRepository).save(any(Role.class));
     }
 
     @Test

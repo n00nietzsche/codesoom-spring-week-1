@@ -1,18 +1,26 @@
 package com.codesoom.demo.controllers;
 
 import com.codesoom.demo.annotations.Utf8MockMvc;
+import com.codesoom.demo.application.AuthenticationService;
 import com.codesoom.demo.application.ProductService;
+import com.codesoom.demo.application.UserService;
 import com.codesoom.demo.domain.Product;
+import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.ProductDto;
+import com.codesoom.demo.dto.UserCreationDto;
 import com.codesoom.demo.exceptions.ProductNotFoundException;
+import com.codesoom.demo.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -38,14 +46,31 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
+
     @MockBean
     private ProductService productService;
 
     private static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.ZZ3CUl0jxeLGvQ1Js5nG2Ty5qGTlqai5ubDMXZOdaDk";
-    private static final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.ZZ3CUl0jxeLGvQ1Js5nG2Ty5qGTlqai5ubDMXZOdaDK";
+    private static final String INVALID_TOKEN = VALID_TOKEN + "A";
 
     @BeforeEach
     void setUp() {
+        userRepository.deleteAll();
+        userService.createUser(UserCreationDto
+                .builder()
+                        .name("NAME")
+                        .email("EMAIL@naver.com")
+                        .password("123123123")
+                .build());
+
         Product product = Product.builder()
                 .name("쥐돌이")
                 .maker("냥이월드")
@@ -69,6 +94,13 @@ class ProductControllerTest {
         });
         given(productService.updateProduct(eq(1000L), any(ProductDto.class))).willThrow(new ProductNotFoundException(1000L));
         given(productService.deleteProduct(1000L)).willThrow(new ProductNotFoundException(1000L));
+    }
+
+    @Test
+    void jwtUtil() {
+        Claims claims = jwtUtil.decode(VALID_TOKEN);
+        Long userId = claims.get("userId", Long.class);
+        System.out.println("userId = " + userId);
     }
 
     @Test
@@ -126,6 +158,7 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + INVALID_TOKEN)
                 )
+
                 .andExpect(status().isUnauthorized());
     }
 

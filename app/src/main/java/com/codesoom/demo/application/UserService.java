@@ -1,5 +1,7 @@
 package com.codesoom.demo.application;
 
+import com.codesoom.demo.domain.Role;
+import com.codesoom.demo.domain.RoleRepository;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.UserCreationDto;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final Mapper mapper;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public User createUser(UserCreationDto userCreationDto) {
         if(userRepository.existsByEmail(userCreationDto.getEmail())) {
@@ -27,6 +30,9 @@ public class UserService {
 
         User user = userRepository.save(mapper.map(userCreationDto, User.class));
         user.encodePassword(user.getPassword());
+
+        Role role = new Role(user.getId(), "USER");
+        roleRepository.save(role);
 
         return user;
     }

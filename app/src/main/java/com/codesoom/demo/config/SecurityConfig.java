@@ -34,8 +34,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         Filter authenticationErrorFilter = new AuthenticationErrorFilter();
         http.csrf().disable()
+                // h2 console 에서 사용하는 frame 들을 보기 위해서 설정
+                .headers().frameOptions().disable()
+                .and()
                 .addFilter(authenticationFilter)
-                .addFilterBefore(authenticationErrorFilter, // advice 에서 잡지 않고, addFilterBefore() 에서 예외를 잡아주었다.
+                // advice 에서 잡지 않고, addFilterBefore() 에서 예외를 잡아주었다.
+                .addFilterBefore(authenticationErrorFilter,
                         JwtAuthenticationFilter.class)
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

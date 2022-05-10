@@ -5,6 +5,7 @@ import com.codesoom.demo.application.AuthenticationService;
 import com.codesoom.demo.application.UserService;
 import com.codesoom.demo.config.Config;
 import com.codesoom.demo.config.SecurityConfig;
+import com.codesoom.demo.domain.Role;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.dto.UserCreationDto;
 import com.codesoom.demo.dto.UserUpdateDto;
@@ -19,8 +20,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -60,6 +69,10 @@ class UserControllerTest {
 
             return claims.get("userId", Long.class);
         }));
+
+        given(authenticationService.getRoles(1L)).willReturn(
+                Arrays.asList(new SimpleGrantedAuthority("USER"), new SimpleGrantedAuthority("ADMIN"))
+        );
 
         given(userService.createUser(any(UserCreationDto.class))).will((invocation -> {
             UserCreationDto userDto = invocation.getArgument(0);
@@ -255,5 +268,14 @@ class UserControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(userService).deleteUser(2002L);
+    }
+
+    @Test
+    void roles() {
+        assertThat(
+                authenticationService.getRoles(1L)
+                        .stream().map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList())
+        ).isEqualTo(Arrays.asList("USER", "ADMIN"));
     }
 }

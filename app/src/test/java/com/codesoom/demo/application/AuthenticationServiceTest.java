@@ -1,5 +1,6 @@
 package com.codesoom.demo.application;
 
+import com.codesoom.demo.domain.RoleRepository;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.domain.UserRepository;
 import com.codesoom.demo.dto.UserCreationDto;
@@ -22,6 +23,8 @@ class AuthenticationServiceTest {
     private AuthenticationService authenticationService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private UserService userService;
     @Autowired
