@@ -51,9 +51,7 @@ public class ProductController {
     @PreAuthorize("isAuthenticated() and hasAuthority('USER')")
     // 이건 로그인이 필요해! -> Authorization
     // 누가 이걸 하는 거야? -> Authentication
-    public Product create(@RequestBody @Valid ProductDto productDto,
-                          Authentication authentication) {
-        System.out.println("authentication = " + authentication);
+    public Product create(@RequestBody @Valid ProductDto productDto) {
         return productService.createProduct(productDto);
     }
 

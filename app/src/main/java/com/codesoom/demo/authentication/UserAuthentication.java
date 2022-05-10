@@ -11,7 +11,7 @@ public class UserAuthentication extends AbstractAuthenticationToken {
     private final Long userId;
 
     public UserAuthentication(Long userId) {
-        super(authorities());
+        super(authorities(userId));
         this.userId = userId;
     }
 
@@ -30,10 +30,18 @@ public class UserAuthentication extends AbstractAuthenticationToken {
         return userId;
     }
 
-    private static List<GrantedAuthority> authorities() {
+    public Long getUserId() {
+        return userId;
+    }
+
+    private static List<GrantedAuthority> authorities(Long userId) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        // TODO: userId 에 따라서 다른 권한 부여가 가능하다. -> ex. admin, etc ...
         authorities.add(new SimpleGrantedAuthority("USER"));
+
+        if(userId.equals(1L)) {
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        }
+
         return authorities;
     }
 }

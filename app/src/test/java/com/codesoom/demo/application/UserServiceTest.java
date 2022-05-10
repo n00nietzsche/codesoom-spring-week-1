@@ -10,6 +10,7 @@ import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Optional;
 
@@ -96,6 +97,23 @@ class UserServiceTest {
         verify(userRepository).existsByEmail(DUPLICATE_EMAIL_ADDRESS);
     }
 
+    // TODO: 업데이트 대상 User 와 업데이트 하려는 User 가 다른 경우 테스트 필요 (다른 회원의 정보를 수정하려 하는 사람)
+    @Test
+    void updateUserWithDifferentCurrentId() {
+        UserUpdateDto userUpdateDto = UserUpdateDto
+                .builder()
+                .name("updatedTester")
+                .password("updatedTester123")
+                .build();
+
+        Long userId = 1L;
+        Long currentId = 2L;
+
+        assertThatThrownBy(() -> userService.updateUser(userId, userUpdateDto, currentId))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+
     @Test
     void updateUserWithExistingId() {
         UserUpdateDto userUpdateDto = UserUpdateDto
@@ -104,7 +122,8 @@ class UserServiceTest {
                 .password("updatedTester123")
                 .build();
 
-        User user = userService.updateUser(1L, userUpdateDto);
+        Long userId = 1L;
+        User user = userService.updateUser(userId, userUpdateDto, userId);
         assertThat(user.getName()).isEqualTo("updatedTester");
         assertThat(user.getPassword()).isEqualTo("updatedTester123");
         assertThat(user.getEmail()).isEqualTo("tester@example.com");
@@ -120,10 +139,11 @@ class UserServiceTest {
                 .password("updatedTester123")
                 .build();
 
-        assertThatThrownBy(() -> userService.updateUser(1000L, userUpdateDto))
+        Long userId = 1000L;
+        assertThatThrownBy(() -> userService.updateUser(userId, userUpdateDto, userId))
                 .isInstanceOf(UserNotFoundException.class);
 
-        verify(userRepository).findByIdAndDeletedIsFalse(1000L);
+        verify(userRepository).findByIdAndDeletedIsFalse(userId);
     }
 
     @Test

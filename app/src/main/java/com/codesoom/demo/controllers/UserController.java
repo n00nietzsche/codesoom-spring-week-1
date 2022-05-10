@@ -6,6 +6,7 @@ package com.codesoom.demo.controllers;
 // => 이건 권한 확인 (Authorization) 이라고 함. 다음 시간에 해보자.
 // TODO: 탈퇴 -> DELETE /users/{id}
 
+import com.codesoom.demo.annotations.CurrentUserId;
 import com.codesoom.demo.application.UserService;
 import com.codesoom.demo.domain.User;
 import com.codesoom.demo.dto.UserUpdateDto;
@@ -15,6 +16,7 @@ import com.github.dozermapper.core.Mapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,14 +45,16 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserResultDto update(@PathVariable Long id, @RequestBody @Valid UserUpdateDto userUpdateDto) {
+    @PreAuthorize("isAuthenticated()")
+    public UserResultDto update(@PathVariable Long id, @RequestBody @Valid UserUpdateDto userUpdateDto, @CurrentUserId Long userId) {
         // TODO: UserService 를 통해 User 를 업데이트 할 것이다.
-        User user = userService.updateUser(id, userUpdateDto);
+        User user = userService.updateUser(id, userUpdateDto, userId);
         return UserResultDto.valueOf(user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
     public void delete(@PathVariable Long id) {
         userService.deleteUser(id);
     }

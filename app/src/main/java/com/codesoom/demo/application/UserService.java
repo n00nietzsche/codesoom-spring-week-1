@@ -9,6 +9,7 @@ import com.codesoom.demo.exceptions.UserNotFoundException;
 import com.github.dozermapper.core.Mapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,11 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(Long id, UserUpdateDto userUpdateDto) {
+    public User updateUser(Long id, UserUpdateDto userUpdateDto, Long userId) {
+        if(!id.equals(userId)) {
+            throw new AccessDeniedException("다른 사용자의 정보를 수정할 수 없습니다.");
+        }
+
         User user = getUser(id);
         mapper.map(userUpdateDto, user);
         return user;
