@@ -17,6 +17,11 @@ import java.util.List;
 // TODO: updateProduct -> 상품 수정
 // TODO: deleteProduct -> 상품 삭제
 
+/**
+ * Service for products.
+ *
+ * @author Jake Seo (n00nietzsche@gmail.com)
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,11 +29,23 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final Mapper mapper;
 
+    /**
+     * Returns all products in this application.
+     *
+     * @return all products.
+     */
     public List<Product> getProducts() {
         // TODO: 실제로 구현할 것
         return productRepository.findAll();
     }
 
+    /**
+     * Retrieves a product by its id.
+     *
+     * @param id an identifier of the product.
+     * @return a product with given ID.
+     * @throws ProductNotFoundException in case, the given ID doesn't exist in repository or is already deleted.
+     */
     public Product getProduct(Long id) {
         // TODO: 실제로 구현할 것
         return findProduct(id);
